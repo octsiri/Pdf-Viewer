@@ -46,6 +46,6 @@ object FileUtils {
             outFile.mkdirs()
         }
         val outFile1 = File(dirPath, "/$fileName.pdf")
-        copy(context.assets.open(assetName), outFile1)
+        copy(context.getAssets().open(assetName), outFile1)
     }
 }
