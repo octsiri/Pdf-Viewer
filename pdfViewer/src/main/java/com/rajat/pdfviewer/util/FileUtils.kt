@@ -5,6 +5,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.text.TextUtils
 import java.io.*
+import android.util.Log;
 
 object FileUtils {
     @Throws(IOException::class)
@@ -17,7 +18,6 @@ object FileUtils {
         return outFile
     }
 
-    @Throws(IOException::class)
     fun copy(inputStream: InputStream?, output: File?) {
         var outputStream: OutputStream? = null
         try {
@@ -36,16 +36,18 @@ object FileUtils {
         }
     }
 
-    @Throws(IOException::class)
     fun downloadFile(context: Context, assetName: String, filePath: String, fileName: String?){
-
-       val dirPath = "${Environment.getExternalStorageDirectory()}/${filePath}"
-        val outFile = File(dirPath)
-        //Create New File if not present
-        if (!outFile.exists()) {
-            outFile.mkdirs()
+        try {
+            val dirPath = "${Environment.getExternalStorageDirectory()}/${filePath}"
+            val outFile = File(dirPath)
+            //Create New File if not present
+            if (!outFile.exists()) {
+                outFile.mkdirs()
+            }
+            val outFile1 = File(dirPath, "/$fileName.pdf")
+            copy(context.getAssets().open(assetName), outFile1)
+        } catch(e: Exception) {
+            Log.d(">>>>>", e);
         }
-        val outFile1 = File(dirPath, "/$fileName.pdf")
-        copy(context.getAssets().open(assetName), outFile1)
     }
 }
