@@ -10,6 +10,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import android.content.Intent;
 import android.net.Uri;
+import android.widget.Toast;
 
 object FileUtils {
     @Throws(IOException::class)
@@ -54,13 +55,8 @@ object FileUtils {
             var ins: InputStream = localPdf.inputStream()
             copy(ins, outFile1)
             val uri = Uri.fromFile(outFile1)
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                setDataAndType(uri, "application/pdf")
-            }
-            context.startActivity(Intent.createChooser(intent, "Select app"))
-            
+            val toast = Toast.makeText(context, "Successfully Download Receipt", 3000)
+            toast.show()
         } catch(e: Exception) {
             val sw = StringWriter()
             e.printStackTrace(PrintWriter(sw))
