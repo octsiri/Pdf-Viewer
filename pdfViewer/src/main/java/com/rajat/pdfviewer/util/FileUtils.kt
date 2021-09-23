@@ -8,6 +8,8 @@ import java.io.*
 import android.util.Log;
 import java.io.PrintWriter
 import java.io.StringWriter
+import android.content.Intent;
+import android.net.Uri;
 
 object FileUtils {
     @Throws(IOException::class)
@@ -51,6 +53,14 @@ object FileUtils {
 
             var ins: InputStream = localPdf.inputStream()
             copy(ins, outFile1)
+            val uri = Uri.fromFile(outFile1)
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                setDataAndType(uri, "application/pdf")
+            }
+            context.startActivity(Intent.createChooser(intent, "Select app"))
+            
         } catch(e: Exception) {
             val sw = StringWriter()
             e.printStackTrace(PrintWriter(sw))
