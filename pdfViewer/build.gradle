@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 29
@@ -23,25 +22,6 @@ android {
         }
     }
 }
-
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
-                // Applies the component for the release build variant.
-                from components.release
-
-                // You can then customize attributes of the publication as shown below.
-                groupId = 'com.rajat.pdfviewer'
-                artifactId = 'final'
-                version = '2.0'
-            }
-            
-        }
-    }
-}
-
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
