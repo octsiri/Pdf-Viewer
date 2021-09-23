@@ -11,6 +11,7 @@ import java.io.StringWriter
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
+import android.app.DownloadManager
 
 object FileUtils {
     @Throws(IOException::class)
@@ -57,6 +58,7 @@ object FileUtils {
             val uri = Uri.fromFile(outFile1)
             val toast = Toast.makeText(context, "Successfully Download Receipt", 3000)
             toast.show()
+            context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
         } catch(e: Exception) {
             val sw = StringWriter()
             e.printStackTrace(PrintWriter(sw))
