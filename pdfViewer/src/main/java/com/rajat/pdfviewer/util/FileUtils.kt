@@ -47,7 +47,10 @@ object FileUtils {
                 outFile.mkdirs()
             }
             val outFile1 = File(dirPath, "/$fileName.pdf")
-            copy(context.assets.open(assetName), outFile1)
+            val localPdf = File(assetName)
+
+            var ins: InputStream = localPdf.inputStream()
+            copy(ins, outFile1)
         } catch(e: Exception) {
             val sw = StringWriter()
             e.printStackTrace(PrintWriter(sw))
