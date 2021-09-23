@@ -6,6 +6,8 @@ import android.provider.MediaStore
 import android.text.TextUtils
 import java.io.*
 import android.util.Log;
+import java.io.PrintWriter
+import java.io.StringWriter
 
 object FileUtils {
     @Throws(IOException::class)
@@ -47,7 +49,10 @@ object FileUtils {
             val outFile1 = File(dirPath, "/$fileName.pdf")
             copy(context.getAssets().open(assetName), outFile1)
         } catch(e: Exception) {
-            Log.d(">>>>>", e);
+            val sw = StringWriter()
+            e.printStackTrace(PrintWriter(sw))
+            val exceptionAsString = sw.toString()
+            Log.d(">>>>>", exceptionAsString);
         }
     }
 }
