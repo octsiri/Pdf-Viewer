@@ -23,7 +23,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import android.app.Activity;
 import kotlinx.android.synthetic.main.activity_pdf_viewer.*
 import kotlinx.android.synthetic.main.pdf_view_tool_bar.*
 import java.io.File
@@ -318,18 +317,19 @@ class PdfViewerActivity : AppCompatActivity() {
 
     private fun openDownloads(context: Context) {
         val manufacturer = Build.MANUFACTURER;   
-        if (manufacturer != null && manufacturer.toLowerCase().equals("samsung")) {
-            context.getPackageManager()
+        if (manufacturer != null && manufacturer.toLowerCase() == "samsung") {
+            context.packageManager
                     .getLaunchIntentForPackage("com.sec.android.app.myfiles");
-            intent.setAction("samsung.myfiles.intent.action.LAUNCH_MY_FILES");
-            intent.putExtra("samsung.myfiles.intent.extra.START_PATH", 
-                    getDownloadsFile().getPath());
+            intent.action = "samsung.files.intent.action.LAUNCH_MY_FILES";
+            intent.putExtra("samsung.files.intent.extra.START_PATH",
+                getDownloadsFile()?.path
+            );
             context.startActivity(intent);
         }
         else context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
     }
 
-    private fun getDownloadsFile(): File {
+    private fun getDownloadsFile(): File? {
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     }
 
