@@ -315,6 +315,24 @@ class PdfViewerActivity : AppCompatActivity() {
         }
     }
 
+    private fun openDownloads(context: Context) {
+        val manufacturer = Build.MANUFACTURER;
+        if (manufacturer != null && manufacturer.toLowerCase() == "samsung") {
+            context.packageManager
+                    .getLaunchIntentForPackage("com.sec.android.app.myfiles");
+            intent.action = "samsung.files.intent.action.LAUNCH_MY_FILES";
+            intent.putExtra("samsung.files.intent.extra.START_PATH",
+                getDownloadsFile()?.path
+            );
+            context.startActivity(intent);
+        }
+        else context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+    }
+
+    private fun getDownloadsFile(): File? {
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+    }
+
     private fun downloadPdf() {
         try {
             if (permissionGranted!!) {
@@ -332,6 +350,7 @@ class PdfViewerActivity : AppCompatActivity() {
                             directoryName!!,
                             fileName
                         )
+                        openDownloads(this)
                     } else {
                         val downloadUrl = Uri.parse(fileUrl)
                         val downloadManger =
