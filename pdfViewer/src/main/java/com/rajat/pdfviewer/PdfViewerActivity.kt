@@ -1,5 +1,6 @@
 package com.rajat.pdfviewer
 
+import android.os.Build;
 import android.Manifest.permission
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
@@ -316,26 +317,25 @@ class PdfViewerActivity : AppCompatActivity() {
         }
     }
 
-    private fun openDownloads() {
-        Activity activity = getCurrentActivity();
+    private fun openDownloads(context: Context) {
         if (isSamsung()) {
-            Intent intent = activity.getPackageManager()
+            ontext.getPackageManager()
                     .getLaunchIntentForPackage("com.sec.android.app.myfiles");
             intent.setAction("samsung.myfiles.intent.action.LAUNCH_MY_FILES");
             intent.putExtra("samsung.myfiles.intent.extra.START_PATH", 
                     getDownloadsFile().getPath());
-            activity.startActivity(intent);
+            context.startActivity(intent);
         }
-        else activity.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+        else context.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
     }
 
-    private fun isSamsung() {
-        String manufacturer = Build.MANUFACTURER;
+    private fun Boolean.isSamsung() {
+        String manufacturer = Build.MANUFACTURER;   
         if (manufacturer != null) return manufacturer.toLowerCase().equals("samsung");
         return false;
     }
 
-    private fun getDownloadsFile() {
+    private fun getDownloadsFile(): File {
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     }
 
@@ -356,7 +356,7 @@ class PdfViewerActivity : AppCompatActivity() {
                             directoryName!!,
                             fileName
                         )
-                        openDownloads()
+                        openDownloads(this)
                     } else {
                         val downloadUrl = Uri.parse(fileUrl)
                         val downloadManger =
