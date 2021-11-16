@@ -316,8 +316,7 @@ class PdfViewerActivity : AppCompatActivity() {
         }
     }
 
-    private fun openDownloads() {
-        Activity activity = getCurrentActivity();
+    private fun openDownloads(@NonNull Activity activity) {
         if (isSamsung()) {
             Intent intent = activity.getPackageManager()
                     .getLaunchIntentForPackage("com.sec.android.app.myfiles");
@@ -329,7 +328,7 @@ class PdfViewerActivity : AppCompatActivity() {
         else activity.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
     }
 
-    private fun isSamsung() {
+    private fun Boolean.isSamsung() {
         String manufacturer = Build.MANUFACTURER;
         if (manufacturer != null) return manufacturer.toLowerCase().equals("samsung");
         return false;
@@ -356,7 +355,7 @@ class PdfViewerActivity : AppCompatActivity() {
                             directoryName!!,
                             fileName
                         )
-                        openDownloads()
+                        openDownloads(this)
                     } else {
                         val downloadUrl = Uri.parse(fileUrl)
                         val downloadManger =
