@@ -57,7 +57,7 @@ object FileUtils {
             copy(ins, outFile1)
             val uri = Uri.fromFile(outFile1)
             context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
-            val toast = Toast.makeText(context, "Successfully Save PDF To Download", 3000)
+            val toast = Toast.makeText(context, "Successfully save order receipt $filename.pdf to Downloads folder", 5000)
             toast.show()
         } catch(e: Exception) {
             val sw = StringWriter()

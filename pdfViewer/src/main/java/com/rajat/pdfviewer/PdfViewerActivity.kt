@@ -23,6 +23,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import android.app.Activity;
 import kotlinx.android.synthetic.main.activity_pdf_viewer.*
 import kotlinx.android.synthetic.main.pdf_view_tool_bar.*
 import java.io.File
@@ -315,6 +316,29 @@ class PdfViewerActivity : AppCompatActivity() {
         }
     }
 
+    private fun openDownloads() {
+        Activity activity = getCurrentActivity();
+        if (isSamsung()) {
+            Intent intent = activity.getPackageManager()
+                    .getLaunchIntentForPackage("com.sec.android.app.myfiles");
+            intent.setAction("samsung.myfiles.intent.action.LAUNCH_MY_FILES");
+            intent.putExtra("samsung.myfiles.intent.extra.START_PATH", 
+                    getDownloadsFile().getPath());
+            activity.startActivity(intent);
+        }
+        else activity.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+    }
+
+    private fun isSamsung() {
+        String manufacturer = Build.MANUFACTURER;
+        if (manufacturer != null) return manufacturer.toLowerCase().equals("samsung");
+        return false;
+    }
+
+    private fun getDownloadsFile() {
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+    }
+
     private fun downloadPdf() {
         try {
             if (permissionGranted!!) {
@@ -332,6 +356,7 @@ class PdfViewerActivity : AppCompatActivity() {
                             directoryName!!,
                             fileName
                         )
+                        openDownloads()
                     } else {
                         val downloadUrl = Uri.parse(fileUrl)
                         val downloadManger =
