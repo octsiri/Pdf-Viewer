@@ -55,8 +55,14 @@ object FileUtils {
 
             var ins: InputStream = localPdf.inputStream()
             copy(ins, outFile1)
-            val uri = Uri.fromFile(outFile1)
-            context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+            // val uri = Uri.fromFile(outFile1)
+            // context.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+            Intent intent = context.getPackageManager()
+                .getLaunchIntentForPackage("com.sec.android.app.myfiles");
+            intent.setAction("samsung.myfiles.intent.action.LAUNCH_MY_FILES");
+            intent.putExtra("samsung.myfiles.intent.extra.START_PATH", 
+            getDownloadsFile().getPath());
+            context.startActivity(intent);
             val toast = Toast.makeText(context, "Successfully Save PDF To Download", 3000)
             toast.show()
         } catch(e: Exception) {
