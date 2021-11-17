@@ -57,7 +57,7 @@ object FileUtils {
             copy(ins, outFile1)
             // val uri = Uri.fromFile(outFile1)
             // context.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
-            Intent intent = context.getPackageManager()
+            context.getPackageManager()
                 .getLaunchIntentForPackage("com.sec.android.app.myfiles");
             intent.setAction("samsung.myfiles.intent.action.LAUNCH_MY_FILES");
             intent.putExtra("samsung.myfiles.intent.extra.START_PATH", 
