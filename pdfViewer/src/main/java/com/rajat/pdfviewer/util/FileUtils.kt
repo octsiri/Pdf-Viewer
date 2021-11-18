@@ -10,8 +10,8 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import android.content.Intent;
 import android.widget.Toast;
-//import android.net.Uri;
-//import android.app.DownloadManager
+import android.net.Uri;
+import android.app.DownloadManager
 
 object FileUtils {
     @Throws(IOException::class)
@@ -44,8 +44,8 @@ object FileUtils {
 
     fun downloadFile(context: Context, assetName: String, filePath: String, fileName: String?){
         try {
-            val dirPath = "${Environment.getExternalStorageDirectory()}/${filePath}"
-            val outFile = File(dirPath)
+            val dirPath = Environment.getExternalStorageState();
+            val outFile = File(dirPath, filePath)
             //Create New File if not present
             if (!outFile.exists()) {
                 outFile.mkdirs()
@@ -55,10 +55,10 @@ object FileUtils {
 
             var ins: InputStream = localPdf.inputStream()
             copy(ins, outFile1)
-            //val uri = Uri.fromFile(outFile1)
-            val toast = Toast.makeText(context, "Successfully Save PDF To Download", 3000)
+            val uri = Uri.fromFile(outFile1)
+            context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+            val toast = Toast.makeText(context, "Successfully Save PDF To Download", Toast.LENGTH_LONG)
             toast.show()
-            //context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
         } catch(e: Exception) {
             val sw = StringWriter()
             e.printStackTrace(PrintWriter(sw))
