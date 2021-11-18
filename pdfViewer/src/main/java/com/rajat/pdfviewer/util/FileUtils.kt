@@ -44,7 +44,7 @@ object FileUtils {
 
     fun downloadFile(context: Context, assetName: String, filePath: String, fileName: String?){
         try {
-            val dirPath = "${Environment.getExternalStorageDirectory()}/${filePath}"
+            val dirPath = "${Environment.getExternalStorageDirectory()}/${filePath}/"
             val outFile = File(dirPath)
             //Create New File if not present
             if (!outFile.exists()) {
@@ -55,9 +55,11 @@ object FileUtils {
 
             var ins: InputStream = localPdf.inputStream()
             copy(ins, outFile1)
-            // val uri = Uri.fromFile(outFile1)
-            // context.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));            
-            val toast = Toast.makeText(context, "Successfully Save PDF To Download", 3000)
+            val uri = Uri.fromFile(outFile1)                        
+            Intent intent = new Intent(Intent.ACTION_PICK)
+            intent.setDataAndType(uri, "file/*")
+            startActivity(intent)
+            val toast = Toast.makeText(context, "Successfully save receipt order to Downloads folder", 4000)
             toast.show()
         } catch(e: Exception) {
             val sw = StringWriter()

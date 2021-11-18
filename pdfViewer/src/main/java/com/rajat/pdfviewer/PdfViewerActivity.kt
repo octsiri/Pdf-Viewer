@@ -331,13 +331,7 @@ class PdfViewerActivity : AppCompatActivity() {
                             fileUrl!!,
                             directoryName!!,
                             fileName
-                        )
-                        this.getPackageManager()
-                            .getLaunchIntentForPackage("com.sec.android.app.myfiles");
-                        intent.setAction("samsung.myfiles.intent.action.LAUNCH_MY_FILES");
-                        intent.putExtra("samsung.myfiles.intent.extra.START_PATH", 
-                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath());
-                        this.startActivity(intent);
+                        ) 
                     } else {
                         val downloadUrl = Uri.parse(fileUrl)
                         val downloadManger =
