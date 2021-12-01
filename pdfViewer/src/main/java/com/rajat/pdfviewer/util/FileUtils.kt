@@ -1,17 +1,13 @@
 package com.rajat.pdfviewer.util
 
-import android.content.Context
-import android.os.Environment
-import android.provider.MediaStore
-import android.text.TextUtils
-import java.io.*
-import android.util.Log;
-import java.io.PrintWriter
-import java.io.StringWriter
-import android.content.Intent;
-import android.widget.Toast;
-import android.net.Uri;
 import android.app.DownloadManager
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Environment
+import android.util.Log
+import android.widget.Toast
+import java.io.*
 
 object FileUtils {
     @Throws(IOException::class)
@@ -45,6 +41,7 @@ object FileUtils {
     fun downloadFile(context: Context, assetName: String, filePath: String, fileName: String?){
         try {
             val dirPath = Environment.getExternalStorageState();
+            val dir: File? = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
             val outFile = File(dirPath, filePath)
             //Create New File if not present
             if (!outFile.exists()) {
@@ -52,11 +49,12 @@ object FileUtils {
             }
             val outFile1 = File(dirPath, "/$fileName.pdf")
             val localPdf = File(assetName)
-
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.setDataAndType(Uri.parse(dir.toString()), "file/*")
             var ins: InputStream = localPdf.inputStream()
             copy(ins, outFile1)
             val uri = Uri.fromFile(outFile1)
-            context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+            context.startActivity(Intent.createChooser(intent, "Open folder"));
             val toast = Toast.makeText(context, "Successfully Save PDF To Download", Toast.LENGTH_LONG)
             toast.show()
         } catch(e: Exception) {
