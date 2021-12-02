@@ -1,17 +1,15 @@
 package com.rajat.pdfviewer.util
 
+import android.app.DownloadManager
 import android.content.Context
-import android.os.Environment
-import android.provider.MediaStore
-import android.text.TextUtils
+import android.content.Intent
+import android.net.Uri
+import android.os.Environment.DIRECTORY_DOWNLOADS
+import android.util.Log
+import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import java.io.*
-import android.util.Log;
-import java.io.PrintWriter
-import java.io.StringWriter
-import android.content.Intent;
-import android.widget.Toast;
-//import android.net.Uri;
-//import android.app.DownloadManager
+
 
 object FileUtils {
     @Throws(IOException::class)
@@ -44,7 +42,9 @@ object FileUtils {
 
     fun downloadFile(context: Context, assetName: String, filePath: String, fileName: String?){
         try {
-            val dirPath = "${Environment.getExternalStorageDirectory()}/${filePath}"
+            val destPath: String? = context.getExternalFilesDir(null)?.absolutePath
+
+            val dirPath = "${destPath}/${filePath}"
             val outFile = File(dirPath)
             //Create New File if not present
             if (!outFile.exists()) {
@@ -55,10 +55,14 @@ object FileUtils {
 
             var ins: InputStream = localPdf.inputStream()
             copy(ins, outFile1)
-            //val uri = Uri.fromFile(outFile1)
+//            val uri = Uri.fromFile(outFile1)
             val toast = Toast.makeText(context, "Successfully Save PDF To Download", 3000)
             toast.show()
-            //context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            val externalFilesDir = context.getExternalFilesDir(DIRECTORY_DOWNLOADS)
+            val uri = Uri.parse(externalFilesDir.toString()) // a directory
+            intent.setDataAndType(uri, "*/*");
+            context.startActivity(Intent.createChooser(intent, "Open folder"));
         } catch(e: Exception) {
             val sw = StringWriter()
             e.printStackTrace(PrintWriter(sw))
