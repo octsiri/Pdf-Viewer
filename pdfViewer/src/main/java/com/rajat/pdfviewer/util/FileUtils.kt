@@ -56,14 +56,14 @@ object FileUtils {
 
             var ins: InputStream = localPdf.inputStream()
             copy(ins, outFile1)
-//            val uri = Uri.fromFile(outFile1)
             val toast = Toast.makeText(context, "Successfully Save PDF To Download", 3000)
             toast.show()
             val externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.path
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
             val uri = Uri.parse(externalFilesDir)
-            intent.setDataAndType(uri, "*/*");
-            context.startActivity(Intent.createChooser(intent, "Open folder"));
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.setDataAndType(uri, "application/pdf");
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP;
+            context.startActivity(Intent.createChooser(intent, "Open Folder"));
         } catch(e: Exception) {
             val sw = StringWriter()
             e.printStackTrace(PrintWriter(sw))
