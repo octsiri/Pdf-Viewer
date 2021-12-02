@@ -4,6 +4,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Environment
 import android.os.Environment.DIRECTORY_DOWNLOADS
 import android.util.Log
 import android.widget.Toast
@@ -58,10 +59,10 @@ object FileUtils {
 //            val uri = Uri.fromFile(outFile1)
             val toast = Toast.makeText(context, "Successfully Save PDF To Download", 3000)
             toast.show()
+            val externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.path
             val intent = Intent(Intent.ACTION_GET_CONTENT)
-            val externalFilesDir = context.getExternalFilesDir(DIRECTORY_DOWNLOADS)
-            val uri = Uri.parse(externalFilesDir.toString()) // a directory
-            intent.setDataAndType(uri, "*/*");
+            val uri = Uri.parse(externalFilesDir) // a directory
+            intent.setDataAndType(uri, "file/*");
             context.startActivity(Intent.createChooser(intent, "Open folder"));
         } catch(e: Exception) {
             val sw = StringWriter()
