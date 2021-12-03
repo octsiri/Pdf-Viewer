@@ -1,15 +1,11 @@
 package com.rajat.pdfviewer.util
-
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import java.io.*
-
-//import android.net.Uri;
-//import android.app.DownloadManager
 
 object FileUtils {
     @Throws(IOException::class)
@@ -40,27 +36,18 @@ object FileUtils {
         }
     }
 
+    @SuppressLint("WrongConstant")
     fun downloadFile(context: Context, assetName: String, filePath: String, fileName: String?){
         try {
-            val dirPath = "${Environment.getDownloadCacheDirectory().path}/${filePath}"
-            val outFile = File(dirPath)
-            //Create New File if not present
-            if (!outFile.exists()) {
-                outFile.mkdirs()
-            }
-            val outFile1 = File(dirPath, "/$fileName.pdf")
-            val localPdf = File(assetName)
-
-
-            var ins: InputStream = localPdf.inputStream()
-            copy(ins, outFile1)
-            val uri = Uri.fromFile(outFile1)
+            val destPath: String? = context.getExternalFilesDir(null)?.absolutePath
+            val dirPath = "${destPath}/${filePath}"
+            val uri = Uri.parse(dirPath)
             val intent = Intent(Intent.ACTION_VIEW)
-            intent.setDataAndType(uri, "application/pdf")
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            val toast = Toast.makeText(context, "Successfully Save PDF To Download", 5000)
+            intent.setDataAndType(uri, "application/pdf");
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP;
+            val toast = Toast.makeText(context, "Successfully Save PDF To Download", Toast.LENGTH_LONG)
             toast.show()
-            context.startActivity(intent);
+            context.startActivity(Intent.createChooser(intent, "Open Folder"));
         } catch(e: Exception) {
             val sw = StringWriter()
             e.printStackTrace(PrintWriter(sw))
