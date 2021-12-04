@@ -52,9 +52,9 @@ object FileUtils {
 
             var ins: InputStream = localPdf.inputStream()
             copy(ins, outFile1)
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.setDataAndType(Uri.parse(outFile1.toString()), "file/*")
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK;
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.setDataAndType(Uri.parse(dirPath), "application/pdf")
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP;
             val toast = Toast.makeText(context, "Successfully Save PDF To Download", 3000)
             toast.show()
             context.startActivity(intent);
