@@ -10,7 +10,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import android.content.Intent;
 import android.widget.Toast;
-//import android.net.Uri;
+import android.net.Uri;
 //import android.app.DownloadManager
 
 object FileUtils {
@@ -55,15 +55,20 @@ object FileUtils {
 
             var ins: InputStream = localPdf.inputStream()
             copy(ins, outFile1)
-            //val uri = Uri.fromFile(outFile1)
+            val uri = Uri.fromFile(outFile1)
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.setDataAndType(uri, "application/pdf");
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK;
             val toast = Toast.makeText(context, "Successfully Save PDF To Download", 3000)
             toast.show()
-            //context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+            context.startActivity(intent);
         } catch(e: Exception) {
             val sw = StringWriter()
             e.printStackTrace(PrintWriter(sw))
             val exceptionAsString = sw.toString()
             Log.d(">>>>>", exceptionAsString);
+            val toast = Toast.makeText(context, "Failed Save PDF To Download", 3000)
+            toast.show()
         }
     }
 }
