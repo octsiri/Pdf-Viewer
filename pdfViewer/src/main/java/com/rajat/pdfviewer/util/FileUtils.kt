@@ -6,7 +6,10 @@ import android.net.Uri
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.FileProvider
+import com.rajat.pdfviewer.BuildConfig
 import java.io.*
+
 
 //import android.app.DownloadManager
 
@@ -52,18 +55,25 @@ object FileUtils {
 
             var ins: InputStream = localPdf.inputStream()
             copy(ins, outFile1)
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.setDataAndType(Uri.parse(dirPath), "application/pdf")
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            val uri = FileProvider.getUriForFile(
+                context,
+                context.applicationContext.packageName + ".provider",
+                outFile1
+            )
+
+            intent.setDataAndType(Uri.fromFile(outFile), "file/*")
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP;
-            val toast = Toast.makeText(context, "Successfully Save PDF To Download", 3000)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            val toast = Toast.makeText(context, "Successfully Save PDF To Download", 5000)
             toast.show()
-            context.startActivity(intent);
+            context.startActivity(Intent.createChooser(intent, "Open folder"));
         } catch(e: Exception) {
             val sw = StringWriter()
             e.printStackTrace(PrintWriter(sw))
             val exceptionAsString = sw.toString()
             Log.d(">>>>>", exceptionAsString);
-            val toast = Toast.makeText(context, "Failed Save PDF To Download: /${exceptionAsString}", 5000)
+            val toast = Toast.makeText(context, "Failed Save PDF To Download: /${exceptionAsString}", 20000)
             toast.show()
         }
     }
