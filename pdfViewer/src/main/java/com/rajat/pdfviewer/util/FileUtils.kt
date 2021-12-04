@@ -41,6 +41,15 @@ object FileUtils {
         try {
             val destPath: String? = context.getExternalFilesDir(null)?.absolutePath
             val dirPath = "${destPath}/${filePath}"
+            val outFile = File(dirPath)
+            //Create New File if not present
+            if (!outFile.exists()) {
+                outFile.mkdirs()
+            }
+            val outFile1 = File(dirPath, "/$fileName.pdf")
+            val localPdf = File(assetName)
+            var ins: InputStream = localPdf.inputStream()
+            copy(ins, outFile1)
             val uri = Uri.parse(dirPath)
             val intent = Intent(Intent.ACTION_VIEW)
             intent.setDataAndType(uri, "application/pdf");
