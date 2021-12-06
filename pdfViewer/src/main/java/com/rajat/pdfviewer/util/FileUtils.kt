@@ -1,17 +1,13 @@
 package com.rajat.pdfviewer.util
-
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Environment
-import android.provider.MediaStore
-import android.text.TextUtils
+import android.util.Log
+import android.widget.Toast
 import java.io.*
-import android.util.Log;
-import java.io.PrintWriter
-import java.io.StringWriter
-import android.content.Intent;
-import android.widget.Toast;
-//import android.net.Uri;
-//import android.app.DownloadManager
+
+
 
 object FileUtils {
     @Throws(IOException::class)
@@ -52,18 +48,34 @@ object FileUtils {
             }
             val outFile1 = File(dirPath, "/$fileName.pdf")
             val localPdf = File(assetName)
-
             var ins: InputStream = localPdf.inputStream()
             copy(ins, outFile1)
-            //val uri = Uri.fromFile(outFile1)
-            val toast = Toast.makeText(context, "Successfully Save PDF To Download", 3000)
-            toast.show()
-            //context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+
+            val myDir = Uri.parse(dirPath)
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            intent.setDataAndType(myDir,  "application/pdf")
+
+            if (intent.resolveActivityInfo(context.packageManager, 0) != null)
+            {
+                context.startActivity(Intent.createChooser(intent, "Open folder"))
+                val toast = Toast.makeText(context, "Successfully Save PDF To Download: /${dirPath}", Toast.LENGTH_LONG)
+                toast.show()
+            }
+            else
+            {
+                // if you reach this place, it means there is no any file
+                // explorer app installed on your device
+                val toast = Toast.makeText(context, "Failed Save PDF To Download", Toast.LENGTH_LONG)
+                toast.show()
+            }
         } catch(e: Exception) {
             val sw = StringWriter()
             e.printStackTrace(PrintWriter(sw))
             val exceptionAsString = sw.toString()
             Log.d(">>>>>", exceptionAsString);
+            val toast = Toast.makeText(context, "Failed Save PDF To Download: /${exceptionAsString}", Toast.LENGTH_LONG)
+            toast.show()
         }
     }
 }
