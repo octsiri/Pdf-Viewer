@@ -59,7 +59,7 @@ object FileUtils {
             if (intent.resolveActivityInfo(context.packageManager, 0) != null)
             {
                 context.startActivity(Intent.createChooser(intent, "Open folder"))
-                val toast = Toast.makeText(context, "Successfully Save PDF To Download: /${dirPath}", Toast.LENGTH_LONG)
+                val toast = Toast.makeText(context, "Successfully Save PDF To Download", Toast.LENGTH_LONG)
                 toast.show()
             }
             else
