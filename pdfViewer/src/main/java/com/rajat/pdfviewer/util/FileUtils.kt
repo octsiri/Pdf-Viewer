@@ -52,7 +52,7 @@ object FileUtils {
             copy(ins, outFile1)
 
             val myDir = Uri.parse(dirPath)
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            val intent = Intent(Intent.ACTION_VIEW)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             intent.setDataAndType(myDir,  "application/pdf")
 
