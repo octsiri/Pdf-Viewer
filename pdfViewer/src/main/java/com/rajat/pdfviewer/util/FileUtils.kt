@@ -4,9 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import java.io.*
-
 
 
 object FileUtils {
@@ -40,7 +40,7 @@ object FileUtils {
 
     fun downloadFile(context: Context, assetName: String, filePath: String, fileName: String?){
         try {
-            val dirPath = "${context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/${filePath}"
+            val dirPath = "${Environment.getExternalStorageDirectory().path}/${filePath}"
             val outFile = File(dirPath)
             //Create New File if not present
             if (!outFile.exists()) {
@@ -52,14 +52,19 @@ object FileUtils {
             copy(ins, outFile1)
 
 
-            val myDir = Uri.parse(dirPath)
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            intent.setDataAndType(myDir,  "application/pdf")
+            val selectedUri = Uri.fromFile(outFile1.absoluteFile)
+            val fileExtension = MimeTypeMap.getFileExtensionFromUrl(selectedUri.toString())
+            val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
 
+//            val myDir = Uri.parse(dirPath)
+//            intent.setDataAndType(myDir,  "application/pdf")
+
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            intent.setDataAndType(selectedUri, mimeType);
             if (intent.resolveActivityInfo(context.packageManager, 0) != null)
             {
-                context.startActivity(Intent.createChooser(intent, "Open folder"))
+                context.startActivity(Intent.createChooser(intent, "Open File..."))
                 val toast = Toast.makeText(context, "Successfully save receipt to folder $filePath ", Toast.LENGTH_LONG)
                 toast.show()
             }
