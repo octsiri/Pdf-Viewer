@@ -1,4 +1,5 @@
 package com.rajat.pdfviewer.util
+import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -71,8 +72,7 @@ object FileUtils {
 
             if(isDoneCopyFile) {
                 val myDir = Uri.parse(dirPath)
-                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                intent.setDataAndType(myDir,  "application/pdf")
+                val intent = Intent(DownloadManager.ACTION_VIEW_DOWNLOADS)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 if (intent.resolveActivityInfo(context.packageManager, 0) != null)
                 {
