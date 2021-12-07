@@ -4,9 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import java.io.*
-
 
 
 object FileUtils {
@@ -38,9 +38,28 @@ object FileUtils {
         }
     }
 
+    fun awaitCopy(inputStream: InputStream?, output: File?): Boolean {
+        var outputStream: OutputStream? = null
+        try {
+            outputStream = FileOutputStream(output)
+            var read = 0
+            val bytes = ByteArray(1024)
+            while (inputStream!!.read(bytes).also { read = it } != -1) {
+                outputStream.write(bytes, 0, read)
+            }
+        } finally {
+            try {
+                inputStream?.close()
+            } finally {
+                outputStream?.close()
+            }
+            return true;
+        }
+    }
+
     fun downloadFile(context: Context, assetName: String, filePath: String, fileName: String?){
         try {
-            val dirPath = "${context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/${filePath}"
+            val dirPath = "${Environment.getExternalStorageDirectory()}/${filePath}"
             val outFile = File(dirPath)
             //Create New File if not present
             if (!outFile.exists()) {
@@ -49,26 +68,26 @@ object FileUtils {
             val outFile1 = File(dirPath, "/$fileName.pdf")
             val localPdf = File(assetName)
             var ins: InputStream = localPdf.inputStream()
-            copy(ins, outFile1)
+            val isDoneCopyFile = awaitCopy(ins, outFile1)
 
-
-            val myDir = Uri.parse(dirPath)
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            intent.setDataAndType(myDir,  "application/pdf")
-
-            if (intent.resolveActivityInfo(context.packageManager, 0) != null)
-            {
-                context.startActivity(Intent.createChooser(intent, "Open folder"))
-                val toast = Toast.makeText(context, "Successfully save receipt to folder $filePath ", Toast.LENGTH_LONG)
-                toast.show()
-            }
-            else
-            {
-                // if you reach this place, it means there is no any file
-                // explorer app installed on your device
-                val toast = Toast.makeText(context, "Failed save receipt to folder $filePath", Toast.LENGTH_LONG)
-                toast.show()
+            if(isDoneCopyFile) {
+                val myDir = Uri.parse(dirPath)
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.setDataAndType(myDir,  "application/pdf")
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                if (intent.resolveActivityInfo(context.packageManager, 0) != null)
+                {
+                    context.startActivity(Intent.createChooser(intent, "Open File..."))
+                    val toast = Toast.makeText(context, "Successfully save receipt to folder $filePath ", Toast.LENGTH_LONG)
+                    toast.show()
+                }
+                else
+                {
+                    // if you reach this place, it means there is no any file
+                    // explorer app installed on your device
+                    val toast = Toast.makeText(context, "Failed save receipt to folder $filePath", Toast.LENGTH_LONG)
+                    toast.show()
+                }
             }
         } catch(e: Exception) {
             val sw = StringWriter()
