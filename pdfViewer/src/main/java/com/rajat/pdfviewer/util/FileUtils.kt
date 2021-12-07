@@ -40,7 +40,8 @@ object FileUtils {
 
     fun downloadFile(context: Context, assetName: String, filePath: String, fileName: String?){
         try {
-            val dirPath = "${Environment.getExternalStorageDirectory()}/${filePath}"
+//            val dirPath = "${Environment.getExternalStorageDirectory()}/${filePath}"
+            val dirPath = "${context.cacheDir}/$assetName"
             val outFile = File(dirPath)
             //Create New File if not present
             if (!outFile.exists()) {
@@ -50,6 +51,7 @@ object FileUtils {
             val localPdf = File(assetName)
             var ins: InputStream = localPdf.inputStream()
             copy(ins, outFile1)
+
 
             val myDir = Uri.parse(dirPath)
             val intent = Intent(Intent.ACTION_GET_CONTENT)
